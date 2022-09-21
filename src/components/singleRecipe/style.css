@@ -1,0 +1,14 @@
+.single__img {
+    height: 450px;
+    width: 450px;
+    transition: .2s;
+}
+
+.single__img:hover {
+    transform: scale(1.1);
+}
+
+.single__label {
+    margin-top: 25px;
+    font-size: 25px;
+}
