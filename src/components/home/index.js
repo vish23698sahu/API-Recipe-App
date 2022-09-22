@@ -125,7 +125,6 @@ export default function Home() {
     const onLunchDinnerClickHandler = () => {
         isLunchD = 1;
         setQuery('Lunch Dinner');
-        // setQuery((prevState) => { setQuery('Lunch Dinner') });
         setShowHome(false);
         getRecipes();
         console.log('query', query);
