@@ -10,8 +10,11 @@ import { YOUR_APP_KEY } from '../../key';
 export default function Home() {
     const [query, setQuery] = useState('');
     const [recipes, setRecipes] = useState([]);
+    const [singleRecipe, setSingleRecipe] = useState([]);
     const [healthLabel, setHealthLabel] = useState('vegan');
     const [showHome, setShowHome] = useState(true);
+    let isNew;
+    let isLunchD;
 
     let selectDish;
     const randomDish = [
@@ -21,7 +24,7 @@ export default function Home() {
         },
         {
             dishId: 2,
-            queryName: 'juice'
+            queryName: 'curd'
         },
         {
             dishId: 3,
@@ -55,11 +58,22 @@ export default function Home() {
             dishId: 10,
             queryName: 'noodles'
         },
+        {
+            dishId: 11,
+            queryName: 'muffins'
+        },
+        {
+            dishId: 12,
+            queryName: 'Icecream'
+        }
     ]
-    selectDish = Math.floor((Math.random() * 10));
-    // console.log(selectDish);
+    selectDish = Math.floor((Math.random() * 12));
     var dishOfTheDay = randomDish[selectDish].queryName;
-    // console.log(dishOfTheDay);
+    let selectOneFromArray;
+
+    if (selectDish === 12) selectOneFromArray = 0;
+    if (selectDish === 6) selectOneFromArray = 1;
+    else selectOneFromArray = Math.floor((Math.random() * 10));
 
     let singleHomeRecipeUrl = `https://api.edamam.com/search?q=${dishOfTheDay}&app_id=${YOUR_APP_ID}&app_key=${YOUR_APP_KEY}&cuisineType=chinese&healthLabels=${healthLabel}`;
 
@@ -72,7 +86,7 @@ export default function Home() {
     function getRecipesSingle() {
         axios.get(singleHomeRecipeUrl).then((result) => {
             console.log('data useeffect', result.data);
-            setRecipes(result.data.hits);
+            setSingleRecipe(result.data.hits);
         }).catch((e) => {
             console.log(e.message);
         });
@@ -80,46 +94,57 @@ export default function Home() {
 
     useEffect(() => {
         getRecipesSingle();
-    }, [showHome]);
-
-    async function getRecipes() {
-        var result = await axios.get(url);
-        setRecipes(result.data.hits);
-        console.log(result.data);
-    }
-
-    function onSubmit(e) {
-        e.preventDefault();
-        setShowHome(false);
-        getRecipes();
-    }
-
-    const onBahuClickHandler = async () => {
-        setShowHome(false);
-        setQuery('indian');
-        var result = await axios.get(url);
-        setRecipes(result.data.hits);
-        console.log(result.data);
-    }
-
-    const onLunchDinnerClickHandler = async () => {
-        setShowHome(false);
-        setQuery('Lunch Dinner');
-        var result = await axios.get(url);
-        setRecipes(result.data.hits);
-        console.log(result.data);
-
-    }
+    }, []);
 
     const onHomeClickHandler = () => {
         setQuery('');
         setShowHome(true);
     }
 
+    async function getRecipes() {
+        var result = await axios.get(url);
+        setRecipes(result.data.hits);
+    }
+
+    function onSubmit(e) {
+        e.preventDefault();
+        setShowHome(false);
+        getRecipes();
+        console.log('Data on Click', recipes);
+    }
+
+    const onNewbieClickHandler = () => {
+        isNew = 1;
+        setQuery('easy');
+        setShowHome(false);
+        getRecipes();
+        console.log('query ', query);
+        console.log('Data Easy', recipes);
+    }
+
+    const onLunchDinnerClickHandler = () => {
+        isLunchD = 1;
+        setQuery('Lunch Dinner');
+        // setQuery((prevState) => { setQuery('Lunch Dinner') });
+        setShowHome(false);
+        getRecipes();
+        console.log('query', query);
+        console.log('Data Lunch Dinner', recipes);
+    }
+
+    useEffect(() => {
+        if (isNew === 1) {
+            setQuery('easy');
+        }
+        if (isLunchD === 1) {
+            setQuery('Lunch Dinner');
+        }
+    }, [onNewbieClickHandler, onLunchDinnerClickHandler]);
+
     return (
         <Fragment>
             <div>
-                <Navbar onHomeClick={onHomeClickHandler} onBahuClick={onBahuClickHandler} onLunchDinnerClick={onLunchDinnerClickHandler} />
+                <Navbar onHomeClick={onHomeClickHandler} onNewbieClick={onNewbieClickHandler} onLunchDinnerClick={onLunchDinnerClickHandler} />
             </div>
             <div className='home' >
                 <h1>Delicious Recipes on Finger Tips</h1>
@@ -151,11 +176,11 @@ export default function Home() {
                     showHome &&
                     <div>
                         <p className='home__homeText'>Get Ready to encounter World wide Mouth Watering Recipes </p>
-                        {recipes.forEach(recipe => {
+                        {singleRecipe.forEach(recipe => {
                             singleImage.push(recipe['recipe']['image']);
                             singleLabel.push(recipe['recipe']['label']);
                         })}
-                        <SingleRecipe imageSrc={singleImage[0]} labelText={singleLabel[0]} />
+                        <SingleRecipe imageSrc={singleImage[selectOneFromArray]} labelText={singleLabel[selectOneFromArray]} />
                     </div>
                 }
 

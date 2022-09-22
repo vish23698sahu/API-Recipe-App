@@ -10,7 +10,7 @@ export default function Navbar(props) {
                 <span onClick={props.onHomeClick} className='navbar__homeText'>Fooodze</span>
             </div>
             <div className='navbar__item1' >Tips and Tricks</div>
-            <div className='navbar__item2' onClick={props.onBahuClick}>Nayi Bahu (India)</div>
+            <div className='navbar__item2' onClick={props.onNewbieClick}>Newbie Dishes</div>
             <div className='navbar__item3' onClick={props.onLunchDinnerClick}>Easy Lunch & Dinners</div>
         </div>
     )
